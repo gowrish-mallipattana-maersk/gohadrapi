@@ -4,7 +4,8 @@ import (
   "os"
   "log"
   "fmt"
-  "io/ioutil"
+  "io"
+  //"io/ioutil"
   "net/http"
   "github.com/gorilla/mux"
 )
@@ -49,19 +50,24 @@ func callApiHome(w http.ResponseWriter, r *http.Request) {
 
     log.Println("INFO - callApiHome(): Endpoing hit - callapi.  Calling API: " + api_to_call)
 
-    response, err := http.Get("http://pokeapi.co/api/v2/pokedex/kanto/")
+    //apiResponse, err := http.Get("http://pokeapi.co/api/v2/pokedex/kanto/")
+    apiResponse, err := http.Get(api_to_call)
     if err != nil {
       log.Println("ERR - callApiHome(): Error Calling API: " + api_to_call + " :" + err.Error())
     }
+    defer apiResponse.Body.Close()
 
-    responseData, err := ioutil.ReadAll(response.Body)
+    /*
+    apiResponseData, err := ioutil.ReadAll(apiResponse.Body)
     if err != nil {
       log.Println("ERR - callApiHome(): Error reading response from API: " + api_to_call + " :" + err.Error())
     }
 
     //fmt.Println(string(responseData))
     //fmt.Fprintf(w, responseData)
-    err := r.Write(response)
+    */
+
+    _, err = io.Copy(w, apiResponse.Body)
     if err != nil {
       log.Println("ERR - callApiHome(): Error writing response: " + err.Error())
       fmt.Fprintf(w, "ERR - Could not write here the response received from the called API")
