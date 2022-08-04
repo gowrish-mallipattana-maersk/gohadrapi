@@ -7,3 +7,6 @@ Call external api in golang:
 
 Write to response the response from an external call:
 - https://stackoverflow.com/questions/41313949/how-to-dump-a-response-of-an-http-get-request-and-write-it-in-http-responsewrite
+
+Redirecting to a URL:
+https://freshman.tech/snippets/go/http-redirect/

@@ -27,7 +27,8 @@ func handleRequests() {
 		router := mux.NewRouter().StrictSlash(true)
     router.HandleFunc("/", homePage).Methods("GET")
     router.HandleFunc("/child1", child1).Methods("GET")
-    router.HandleFunc("/callApi/home", callApiHome).Methods("GET")
+    router.HandleFunc("/callapi/home", callApiHome).Methods("GET")
+    router.HandleFunc("/callapi/redirect", callApiRedirect).Methods("GET")
 
 		// start the server
     log.Fatal(http.ListenAndServe(serverport, router))
@@ -48,8 +49,9 @@ func child1(w http.ResponseWriter, r *http.Request) {
 //--------------------------------
 func callApiHome(w http.ResponseWriter, r *http.Request) {
 
-    log.Println("INFO - callApiHome(): Endpoing hit - callapi.  Calling API: " + api_to_call)
+    log.Println("INFO - callApiHome(): Endpoing hit - callapi/home.  Calling the API: " + api_to_call)
 
+    // call the api
     //apiResponse, err := http.Get("http://pokeapi.co/api/v2/pokedex/kanto/")
     apiResponse, err := http.Get(api_to_call)
     if err != nil {
@@ -73,6 +75,15 @@ func callApiHome(w http.ResponseWriter, r *http.Request) {
       fmt.Fprintf(w, "ERR - Could not write here the response received from the called API")
     }
 
+}
+
+//--------------------------------
+func callApiRedirect(w http.ResponseWriter, r *http.Request) {
+
+    log.Println("INFO - callApiRedirect(): Endpoing hit - callapi/redirect.  Redirecting to the API: " + api_to_call)
+
+    // Do the redirect
+    http.Redirect(w, r, api_to_call, http.StatusSeeOther)
 }
 
 func main() {
